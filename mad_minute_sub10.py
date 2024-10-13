@@ -1,6 +1,7 @@
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import random
+import argparse
 
 def generate_addition_problems(rows, cols):
     """Generate a list of random addition problems where the sum is less than 10."""
@@ -22,15 +23,22 @@ def draw_addition_problems(c, problems, rows, cols, width, height, font_size):
     
     for row in range(rows):
         for col in range(cols):
-            x = col * problem_width + 20
+            x = (col + 1) * problem_width - 50  # Right margin for the column
             y = height - row * problem_height - 40
             a, b = problems[row * cols + col]
             
-            # Draw the numbers and space for the answer
-            c.drawString(x, y, str(a))
-            c.drawString(x, y - font_size, "+ " + str(b))
-            c.line(x, y - font_size * 2, x + font_size * 2, y - font_size * 2)
-            c.drawString(x, y - font_size * 3, "__")
+            # Right-justify by calculating width of number strings
+            a_width = c.stringWidth(str(a), "Helvetica", font_size)
+            b_width = c.stringWidth("+ " + str(b), "Helvetica", font_size)
+            line_width = c.stringWidth("___", "Helvetica", font_size)
+            
+            # Draw the numbers, right-justified
+            c.drawString(x - a_width, y, str(a))
+            c.drawString(x - b_width, y - font_size, "+ " + str(b))
+            
+            # Draw the line for the answer, right-justified
+            c.line(x - line_width, y - font_size*1.2, x, y - font_size*1.2)
+
 
 def generate_pdf(filename, rows=5, cols=5, font_size=14):
     """Generate a PDF with the specified number of rows, columns, and font size."""
@@ -44,5 +52,10 @@ def generate_pdf(filename, rows=5, cols=5, font_size=14):
     c.save()
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", type=str, default="mad_minute_sub10.pdf")
+
+    args = parser.parse_args()
+
     # Example usage
-    generate_pdf("mad_minute_sub10.pdf", rows=6, cols=4, font_size=20)
+    generate_pdf(args.output, rows=8, cols=5, font_size=20)
