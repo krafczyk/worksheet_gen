@@ -7,12 +7,10 @@ def generate_addition_problems(rows, cols):
     """Generate a list of random addition problems where the sum is less than 10."""
     problems = []
     for _ in range(rows * cols):
-        while True:
-            a = random.randint(0, 9)
-            b = random.randint(0, 9)
-            if a + b < 10:
-                problems.append((a, b))
-                break
+        total = random.randint(1,9)
+        a = random.randint(0,total)
+        b = total-a
+        problems.append((a,b))
     return problems
 
 def draw_addition_problems(c, problems, rows, cols, width, height, font_size):
