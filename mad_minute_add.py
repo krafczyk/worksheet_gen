@@ -4,12 +4,12 @@ from worksheet.sampling import sample_addition_problems
 
 
 def main() -> None:
-    """Generate an addition worksheet from a configurable sum range."""
+    """Generate an addition worksheet from a configurable operand range."""
     options = parse_options("mad_minute_add.pdf", 1, 9)
     problems = sample_addition_problems(
         options.problem_count,
-        minimum_total=options.minimum,
-        maximum_total=options.maximum,
+        minimum_operand=options.minimum,
+        maximum_operand=options.maximum,
     )
     layout = WorksheetLayout(options.rows, options.cols, options.font_size)
     generate_pdf(options.output, problems, layout)

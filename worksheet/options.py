@@ -15,8 +15,8 @@ class WorksheetOptions:
         rows: Number of problem rows.
         cols: Number of problem columns.
         font_size: Problem text size in points.
-        minimum: Smallest generated value, inclusive.
-        maximum: Largest generated value, inclusive.
+        minimum: Smallest generated operand, inclusive.
+        maximum: Largest generated operand, inclusive.
         pages: Number of worksheet pages to generate.
     """
 
@@ -68,8 +68,8 @@ def parse_options(
 
     Args:
         default_output: PDF filename used when ``--output`` is omitted.
-        default_minimum: Smallest generated value used by default.
-        default_maximum: Largest generated value used by default.
+        default_minimum: Smallest generated operand used by default.
+        default_maximum: Largest generated operand used by default.
         args: Arguments to parse, or ``None`` to read the process arguments.
 
     Returns:
@@ -94,13 +94,13 @@ def parse_options(
         "--minimum",
         type=_non_negative_integer,
         default=default_minimum,
-        help="smallest generated value, inclusive",
+        help="smallest generated operand, inclusive",
     )
     _ = parser.add_argument(
         "--maximum",
         type=_non_negative_integer,
         default=default_maximum,
-        help="largest generated value, inclusive",
+        help="largest generated operand, inclusive",
     )
     parsed = cast(
         _ArgumentNamespace,
