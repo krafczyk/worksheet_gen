@@ -1,4 +1,4 @@
-"""Generate configurable worksheets with multiplication-only defaults."""
+"""Generate arithmetic worksheets with configurable operation probabilities."""
 
 from worksheet.layout import WorksheetLayout, generate_pdf
 from worksheet.options import parse_options
@@ -6,11 +6,11 @@ from worksheet.sampling import sample_problems
 
 
 def main() -> None:
-    """Parse CLI options and write a PDF, defaulting to multiplication over 1-6.
+    """Parse CLI options and write a PDF, defaulting to +, -, x over operands 1-9.
 
     Raises SystemExit for invalid options or help, and OSError on output failure.
     """
-    options = parse_options("mad_minute_mult.pdf", 1, 6, default_operations=("x",))
+    options = parse_options("mad_minute.pdf", 1, 9)
     problems = sample_problems(
         options.problem_count,
         minimum_operand=options.minimum,

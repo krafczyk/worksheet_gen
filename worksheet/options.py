@@ -1,9 +1,12 @@
 """Shared command-line options for worksheet generators."""
 
 import argparse
+import ast
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Protocol, cast
+
+from .sampling import Operation, normalize_operations
 
 
 @dataclass(frozen=True)
@@ -18,6 +21,7 @@ class WorksheetOptions:
         minimum: Smallest generated operand, inclusive.
         maximum: Largest generated operand, inclusive.
         pages: Number of worksheet pages to generate.
+        operations: Operators or (operator, relative weight) tuples to sample.
     """
 
     output: str
@@ -27,6 +31,7 @@ class WorksheetOptions:
     minimum: int
     maximum: int
     pages: int = 1
+    operations: tuple[Operation, ...] = ("+", "-", "x")
 
     @property
     def problem_count(self) -> int:
@@ -42,6 +47,7 @@ class _ArgumentNamespace(Protocol):
     minimum: int
     maximum: int
     pages: int
+    operations: tuple[Operation, ...]
 
 
 def _positive_integer(value: str) -> int:
@@ -58,11 +64,22 @@ def _non_negative_integer(value: str) -> int:
     return parsed
 
 
+def _operations(value: str) -> tuple[tuple[str, float], ...]:
+    try:
+        return normalize_operations(cast(object, ast.literal_eval(value)))
+    except (ValueError, SyntaxError, TypeError) as error:
+        raise argparse.ArgumentTypeError(
+            f"{error}; use a list such as ['+', ('-', 3), 'x']"
+        ) from error
+
+
 def parse_options(
     default_output: str,
     default_minimum: int,
     default_maximum: int,
     args: Sequence[str] | None = None,
+    *,
+    default_operations: Sequence[Operation] = ("+", "-", "x"),
 ) -> WorksheetOptions:
     """Parse the options shared by all worksheet entry points.
 
@@ -71,18 +88,21 @@ def parse_options(
         default_minimum: Smallest generated operand used by default.
         default_maximum: Largest generated operand used by default.
         args: Arguments to parse, or ``None`` to read the process arguments.
+        default_operations: Operators or (operator, relative weight) tuples used
+            when ``--operations`` is omitted. Bare operators have weight one.
 
     Returns:
-        Validated output and worksheet layout options.
+        Validated output, layout, operand range, and operation options.
 
     Raises:
-        ValueError: If a default range is negative or empty.
+        ValueError: If a default range or operation distribution is invalid.
         SystemExit: If a command-line option is invalid or help is requested.
     """
     if default_minimum < 0 or default_maximum < 0:
         raise ValueError("default range values must be non-negative")
     if default_minimum > default_maximum:
         raise ValueError("default_minimum cannot exceed default_maximum")
+    operations = normalize_operations(default_operations)
 
     parser = argparse.ArgumentParser()
     _ = parser.add_argument("--output", default=default_output)
@@ -90,6 +110,14 @@ def parse_options(
     _ = parser.add_argument("--cols", type=_positive_integer, default=5)
     _ = parser.add_argument("--font-size", type=_positive_integer, default=20)
     _ = parser.add_argument("--pages", type=_positive_integer, default=1)
+    _ = parser.add_argument(
+        "--operations",
+        type=_operations,
+        default=operations,
+        metavar="LIST",
+        help="Python literal list of operators or weighted tuples, "
+        + "e.g. \"['+', ('-', 3), 'x']\"; weights are relative probabilities",
+    )
     _ = parser.add_argument(
         "--minimum",
         type=_non_negative_integer,
@@ -117,4 +145,5 @@ def parse_options(
         minimum=parsed.minimum,
         maximum=parsed.maximum,
         pages=parsed.pages,
+        operations=parsed.operations,
     )

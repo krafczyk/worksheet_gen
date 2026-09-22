@@ -4,12 +4,15 @@ from .layout import WorksheetLayout, draw_worksheet, generate_pdf
 from .options import WorksheetOptions, parse_options
 from .problem import Problem, draw_problem
 from .sampling import (
+    Operation,
     sample_addition_problems,
     sample_addition_subtraction_problems,
     sample_multiplication_problems,
+    sample_problems,
 )
 
 __all__ = [
+    "Operation",
     "Problem",
     "WorksheetLayout",
     "WorksheetOptions",
@@ -20,4 +23,5 @@ __all__ = [
     "sample_addition_problems",
     "sample_addition_subtraction_problems",
     "sample_multiplication_problems",
+    "sample_problems",
 ]
