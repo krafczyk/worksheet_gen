@@ -4,9 +4,13 @@ from worksheet.sampling import sample_addition_problems
 
 
 def main() -> None:
-    """Generate an addition worksheet whose sums are less than ten."""
-    options = parse_options("mad_minute_sub10.pdf")
-    problems = sample_addition_problems(options.problem_count, maximum_total=9)
+    """Generate an addition worksheet from a configurable sum range."""
+    options = parse_options("mad_minute_add.pdf", 1, 9)
+    problems = sample_addition_problems(
+        options.problem_count,
+        minimum_total=options.minimum,
+        maximum_total=options.maximum,
+    )
     layout = WorksheetLayout(options.rows, options.cols, options.font_size)
     generate_pdf(options.output, problems, layout)
 

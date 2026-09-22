@@ -10,27 +10,34 @@ def _validate_count(count: int) -> None:
         raise ValueError("count cannot be negative")
 
 
-def sample_addition_problems(count: int, maximum_total: int) -> list[Problem]:
-    """Sample addition problems whose totals are within a positive bound.
+def sample_addition_problems(
+    count: int,
+    minimum_total: int,
+    maximum_total: int,
+) -> list[Problem]:
+    """Sample addition problems from an inclusive total range.
 
     Args:
         count: Number of problems to sample. Must not be negative.
-        maximum_total: Largest possible sum. Must be at least one.
+        minimum_total: Smallest possible sum. Must not be negative.
+        maximum_total: Largest possible sum.
 
     Returns:
-        Random addition problems with sums from one through
+        Random addition problems with sums from ``minimum_total`` through
         ``maximum_total`` and non-negative operands.
 
     Raises:
-        ValueError: If ``count`` is negative or ``maximum_total`` is below one.
+        ValueError: If ``count`` is negative or the total range is invalid.
     """
     _validate_count(count)
-    if maximum_total < 1:
-        raise ValueError("maximum_total must be at least one")
+    if minimum_total < 0:
+        raise ValueError("minimum_total cannot be negative")
+    if minimum_total > maximum_total:
+        raise ValueError("minimum_total cannot exceed maximum_total")
 
     problems: list[Problem] = []
     for _ in range(count):
-        total = random.randint(1, maximum_total)
+        total = random.randint(minimum_total, maximum_total)
         first_operand = random.randint(0, total)
         problems.append(Problem(first_operand, total - first_operand, "+"))
     return problems
@@ -38,28 +45,33 @@ def sample_addition_problems(count: int, maximum_total: int) -> list[Problem]:
 
 def sample_addition_subtraction_problems(
     count: int,
+    minimum_value: int,
     maximum_value: int,
 ) -> list[Problem]:
     """Sample addition and non-negative subtraction problems.
 
     Args:
         count: Number of problems to sample. Must not be negative.
-        maximum_value: Largest sum or minuend. Must be at least one.
+        minimum_value: Smallest sum or minuend. Must not be negative.
+        maximum_value: Largest sum or minuend.
 
     Returns:
         Randomly mixed addition and subtraction problems. Addition sums and
-        subtraction minuends range from one through ``maximum_value``.
+        subtraction minuends range from ``minimum_value`` through
+        ``maximum_value``.
 
     Raises:
-        ValueError: If ``count`` is negative or ``maximum_value`` is below one.
+        ValueError: If ``count`` is negative or the value range is invalid.
     """
     _validate_count(count)
-    if maximum_value < 1:
-        raise ValueError("maximum_value must be at least one")
+    if minimum_value < 0:
+        raise ValueError("minimum_value cannot be negative")
+    if minimum_value > maximum_value:
+        raise ValueError("minimum_value cannot exceed maximum_value")
 
     problems: list[Problem] = []
     for _ in range(count):
-        total = random.randint(1, maximum_value)
+        total = random.randint(minimum_value, maximum_value)
         operator = random.choice(("+", "-"))
         if operator == "+":
             first_operand = random.randint(0, total)
