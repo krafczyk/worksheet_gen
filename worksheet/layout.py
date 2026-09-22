@@ -82,21 +82,31 @@ def generate_pdf(
     problems: Sequence[Problem],
     layout: WorksheetLayout,
 ) -> None:
-    """Render a problem set to a single-page PDF worksheet.
+    """Render one or more complete problem grids to a PDF worksheet.
 
     Args:
         filename: Destination PDF path.
-        problems: Problems in row-major order. The number of problems must
-            exactly fill the configured grid.
+        problems: Problems in row-major order. The number of problems must be
+            a positive multiple of the configured grid size.
         layout: Page and grid layout settings.
 
     Raises:
-        ValueError: If the number of problems does not match the grid size.
+        ValueError: If the problems do not fill one or more complete pages.
         OSError: If the destination cannot be written.
 
     Side Effects:
         Creates or replaces ``filename``.
     """
+    problems_per_page = layout.rows * layout.cols
+    if not problems or len(problems) % problems_per_page != 0:
+        raise ValueError(
+            f"expected a positive multiple of {problems_per_page} problems, got {len(problems)}"
+        )
+
     pdf = Canvas(fspath(filename), pagesize=layout.page_size)
-    draw_worksheet(pdf, problems, layout)
+    for page_start in range(0, len(problems), problems_per_page):
+        page_end = page_start + problems_per_page
+        draw_worksheet(pdf, problems[page_start:page_end], layout)
+        if page_end < len(problems):
+            pdf.showPage()
     pdf.save()
