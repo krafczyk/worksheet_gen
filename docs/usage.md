@@ -1,7 +1,8 @@
 # Worksheet Generators
 
-This page covers arithmetic worksheets. See [Spelling Practice](language-worksheets.md)
-for grade-level word lists, rote-spelling sheets, and handwriting guides.
+This page covers arithmetic worksheets. See [Spelling and Grammar](language-worksheets.md)
+for grade-level word lists, rote-spelling sheets, handwriting guides, and OpenCode
+grammar generation.
 
 Run the scripts with Python and ReportLab installed (the existing environment is
 `worksheet_venv/bin/python`). Each command writes a PDF to `--output`, replacing

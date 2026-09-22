@@ -1,8 +1,8 @@
 # Worksheet Fonts
 
-All arithmetic and spelling scripts default to **Andika Regular** and
-accept `--font`. The same face is used for prompts, headings, instructions, and
-page numbers. Text wrapping and arithmetic alignment use
+All arithmetic, spelling, and grammar scripts default to **Andika Regular** and
+accept `--font`. The same face is used for prompts, headings, instructions, page
+numbers, and grammar answer keys. Text wrapping and arithmetic alignment use
 that face's actual widths. Changing fonts can change wrapping and pagination.
 
 ```sh
@@ -14,6 +14,8 @@ worksheet_venv/bin/python spelling_practice.py --grade 2 --font Helvetica
 
 # Other standard PDF faces work in every script.
 worksheet_venv/bin/python mad_minute.py --font Courier
+worksheet_venv/bin/python grammar_practice.py --grade 2 \
+  --sentences docs/examples/grade2-sentences.json --font Times-Roman
 
 # Load a TrueType font you have permission to embed.
 worksheet_venv/bin/python spelling_practice.py --grade 2 \
@@ -36,11 +38,11 @@ The project bundles only Andika Regular; other weights can be supplied as font
 files. OpenType/CFF, variable-font workflows, font collections, and automatic
 bold/italic family selection are not provided by this option. Use a static
 TrueType face. Unknown names, unreadable files, and invalid fonts fail instead
-of silently substituting another face. Keep input font files distinct from
-output destinations.
+of silently substituting another face. Grammar font validation happens before
+an LLM request. Keep input font files distinct from output destinations.
 
-`--font-size` still controls prompt size: spelling defaults to 22 points and
-arithmetic to 20. Writing headings remain 18 points, instructions 12,
+`--font-size` still controls prompt size: spelling defaults to 22 points, grammar
+to 16, and arithmetic to 20. Writing headings remain 18 points, instructions 12,
 and page numbers 10. Changing the typeface does not change these sizes or the
 handwriting guide style. Andika was chosen for its literacy-oriented letterforms,
 not as a claim of a proven improvement in spelling retention.
