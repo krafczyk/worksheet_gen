@@ -1,4 +1,4 @@
-"""Shared command-line options for worksheet generators."""
+"""Shared command-line options for arithmetic worksheet generators."""
 
 import argparse
 import ast
@@ -6,6 +6,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Protocol, cast
 
+from .fonts import DEFAULT_FONT, resolve_font
 from .sampling import Operation, normalize_operations
 
 
@@ -22,6 +23,8 @@ class WorksheetOptions:
         maximum: Largest generated operand, inclusive.
         pages: Number of worksheet pages to generate.
         operations: Operators or (operator, relative weight) tuples to sample.
+        instructions: Plain-text directions repeated at the top of each page.
+        font_name: Font name or .ttf path used throughout the worksheet.
     """
 
     output: str
@@ -32,6 +35,8 @@ class WorksheetOptions:
     maximum: int
     pages: int = 1
     operations: tuple[Operation, ...] = ("+", "-", "x")
+    instructions: str = "Solve each problem."
+    font_name: str = DEFAULT_FONT
 
     @property
     def problem_count(self) -> int:
@@ -48,6 +53,8 @@ class _ArgumentNamespace(Protocol):
     maximum: int
     pages: int
     operations: tuple[Operation, ...]
+    instructions: str
+    font_name: str
 
 
 def _positive_integer(value: str) -> int:
@@ -81,7 +88,7 @@ def parse_options(
     *,
     default_operations: Sequence[Operation] = ("+", "-", "x"),
 ) -> WorksheetOptions:
-    """Parse the options shared by all worksheet entry points.
+    """Parse the options shared by arithmetic worksheet entry points.
 
     Args:
         default_output: PDF filename used when ``--output`` is omitted.
@@ -92,11 +99,14 @@ def parse_options(
             when ``--operations`` is omitted. Bare operators have weight one.
 
     Returns:
-        Validated output, layout, operand range, and operation options.
+        Validated output, font, layout, operand range, and operation options.
 
     Raises:
         ValueError: If a default range or operation distribution is invalid.
         SystemExit: If a command-line option is invalid or help is requested.
+
+    Side Effects:
+        Registers the selected font if needed to validate it before generation.
     """
     if default_minimum < 0 or default_maximum < 0:
         raise ValueError("default range values must be non-negative")
@@ -109,7 +119,15 @@ def parse_options(
     _ = parser.add_argument("--rows", type=_positive_integer, default=8)
     _ = parser.add_argument("--cols", type=_positive_integer, default=5)
     _ = parser.add_argument("--font-size", type=_positive_integer, default=20)
+    _ = parser.add_argument(
+        "--font", dest="font_name", default=DEFAULT_FONT,
+        help="font name (default: Andika) or path to a TrueType .ttf file",
+    )
     _ = parser.add_argument("--pages", type=_positive_integer, default=1)
+    _ = parser.add_argument(
+        "--instructions", default="Solve each problem.",
+        help="directions repeated on each page; use an empty string to omit",
+    )
     _ = parser.add_argument(
         "--operations",
         type=_operations,
@@ -136,6 +154,10 @@ def parse_options(
     )
     if parsed.minimum > parsed.maximum:
         parser.error("--minimum cannot exceed --maximum")
+    try:
+        _ = resolve_font(parsed.font_name)
+    except ValueError as error:
+        parser.error(str(error))
 
     return WorksheetOptions(
         output=parsed.output,
@@ -146,4 +168,6 @@ def parse_options(
         maximum=parsed.maximum,
         pages=parsed.pages,
         operations=parsed.operations,
+        instructions=parsed.instructions,
+        font_name=parsed.font_name,
     )

@@ -36,6 +36,7 @@ class WorksheetScriptTests(unittest.TestCase):
                     operations=tuple((operator, 1.0) for operator in operators),
                 )
                 self.assertEqual(render.call_args.args[0], f"{name}.pdf")
+                self.assertEqual(cast(WorksheetLayout, render.call_args.args[2]).font_name, "Andika")
 
     def test_all_scripts_accept_operation_overrides(self) -> None:
         """Every script must honor weighted operations and existing layout flags."""
@@ -52,6 +53,8 @@ class WorksheetScriptTests(unittest.TestCase):
                     "--minimum", "2", "--maximum", "7", "--pages", "2",
                     "--rows", "3", "--cols", "4", "--font-size", "18",
                     "--output", "custom.pdf",
+                    "--instructions", "Work carefully.",
+                    "--font", "Courier",
                 ]),
                 patch(f"{name}.generate_pdf") as render,
             ):
@@ -65,6 +68,8 @@ class WorksheetScriptTests(unittest.TestCase):
                 self.assertEqual({p.operator for p in problems}, {"-"})
                 self.assertTrue(all(2 <= p.second_operand <= p.first_operand <= 7 for p in problems))
                 self.assertEqual((layout.rows, layout.cols, layout.font_size), (3, 4, 18))
+                self.assertEqual(layout.instructions, "Work carefully.")
+                self.assertEqual(layout.font_name, "Courier")
 
     def test_invalid_operations_do_not_render(self) -> None:
         """Invalid input must fail before creating or replacing the output PDF."""

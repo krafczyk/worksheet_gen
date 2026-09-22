@@ -1,0 +1,36 @@
+{
+  "language": "en-US",
+  "source": "Project-authored starter lists of common English words. Grade groupings are suggestions, not an official curriculum or standardized assessment.",
+  "grades": {
+    "1": [
+      "cat", "dog", "sun", "hat", "map", "bed", "red", "hen", "pen", "pig",
+      "sit", "big", "hop", "hot", "pot", "cup", "run", "bus", "bug", "fun",
+      "fish", "shop", "ship", "chin", "thin", "that", "with", "this", "when", "them",
+      "and", "the", "you", "was", "said", "have", "come", "some", "like", "make"
+    ],
+    "2": [
+      "rain", "train", "paint", "play", "stay", "boat", "coat", "road", "snow", "grow",
+      "tree", "green", "sleep", "team", "read", "beach", "night", "light", "bright", "right",
+      "bird", "girl", "turn", "farm", "star", "short", "corn", "spoon", "school", "room",
+      "happy", "funny", "little", "rabbit", "basket", "sister", "mother", "father", "friend", "because"
+    ],
+    "3": [
+      "teacher", "helpful", "careful", "kindness", "hopeful", "fearless", "quickly", "slowly", "safely", "loudly",
+      "running", "stopped", "planned", "making", "riding", "smiling", "babies", "stories", "cities", "leaves",
+      "family", "animal", "garden", "summer", "winter", "morning", "evening", "outside", "between", "around",
+      "always", "almost", "enough", "answer", "question", "minute", "special", "people", "different", "beautiful"
+    ],
+    "4": [
+      "uncertain", "unhappy", "disagree", "dislike", "rewrite", "rebuild", "preview", "misplace", "impossible", "inactive",
+      "movement", "enjoyment", "sadness", "darkness", "wonderful", "colorful", "careless", "thoughtful", "creation", "education",
+      "direction", "invention", "attention", "decision", "division", "fraction", "measure", "distance", "weather", "season",
+      "mountain", "ocean", "island", "country", "journey", "village", "library", "history", "exercise", "surprise"
+    ],
+    "5": [
+      "necessary", "separate", "definite", "favorite", "familiar", "temperature", "environment", "government", "community", "opportunity",
+      "responsible", "independent", "confident", "patient", "curious", "generous", "courageous", "valuable", "reasonable", "comfortable",
+      "description", "explanation", "information", "communication", "imagination", "observation", "conclusion", "comparison", "solution", "discussion",
+      "scientific", "electricity", "experiment", "evidence", "material", "resource", "population", "geography", "dictionary", "vocabulary"
+    ]
+  }
+}

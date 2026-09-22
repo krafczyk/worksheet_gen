@@ -4,6 +4,8 @@ from dataclasses import dataclass
 
 from reportlab.pdfgen.canvas import Canvas
 
+from .fonts import DEFAULT_FONT, resolve_font
+
 
 @dataclass(frozen=True)
 class Problem:
@@ -26,7 +28,7 @@ def draw_problem(
     right_x: float,
     top_y: float,
     font_size: int,
-    font_name: str = "Helvetica",
+    font_name: str = DEFAULT_FONT,
 ) -> None:
     """Draw one right-aligned arithmetic problem on a PDF canvas.
 
@@ -36,11 +38,16 @@ def draw_problem(
         right_x: Right edge of the problem in page points.
         top_y: Baseline of the first operand in page points.
         font_size: Problem text size in points.
-        font_name: ReportLab font used to measure the problem text.
+        font_name: Font name or .ttf path accepted by ``resolve_font``; bundled
+            Andika by default. Used for both measuring and drawing the text.
+
+    Raises:
+        ValueError: If the selected font cannot be loaded.
 
     Side Effects:
-        Draws two text lines and an answer line on ``pdf``.
+        Registers the font if needed and draws two text lines and an answer line.
     """
+    font_name = resolve_font(font_name)
     pdf.setFont(font_name, font_size)
     first_line = str(problem.first_operand)
     second_line = f"{problem.operator} {problem.second_operand}"

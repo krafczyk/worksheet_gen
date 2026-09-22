@@ -10,6 +10,21 @@ from worksheet.options import parse_options
 class OperationOptionsTests(unittest.TestCase):
     """Verify operation parsing and rejection of invalid command-line input."""
 
+    def test_font_defaults_and_overrides(self) -> None:
+        """Arithmetic defaults to Andika and accepts a named font override."""
+        self.assertEqual(parse_options("test.pdf", 1, 9, []).font_name, "Andika")
+        self.assertEqual(parse_options("test.pdf", 1, 9, ["--font", "Courier"]).font_name, "Courier")
+        with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            _ = parse_options("test.pdf", 1, 9, ["--font", "missing-font"])
+
+    def test_instructions_can_be_customized_or_disabled(self) -> None:
+        """Directions must accept arbitrary plain text, including an empty string."""
+        self.assertEqual(parse_options("test.pdf", 1, 9, []).instructions, "Solve each problem.")
+        for text in ("Work carefully.", ""):
+            with self.subTest(text=text):
+                options = parse_options("test.pdf", 1, 9, ["--instructions", text])
+                self.assertEqual(options.instructions, text)
+
     def test_default_operations(self) -> None:
         """Generic defaults must give all supported operators equal weight."""
         options = parse_options("test.pdf", 1, 9, [])

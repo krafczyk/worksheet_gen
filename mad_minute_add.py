@@ -8,7 +8,8 @@ from worksheet.sampling import sample_problems
 def main() -> None:
     """Parse CLI options and write a PDF, defaulting to addition with operands 1-9.
 
-    Raises SystemExit for invalid options or help, and OSError on output failure.
+    Raises SystemExit for invalid options or help, ValueError if instructions
+    cannot fit the layout, and OSError on output failure.
     """
     options = parse_options("mad_minute_add.pdf", 1, 9, default_operations=("+",))
     problems = sample_problems(
@@ -17,7 +18,10 @@ def main() -> None:
         maximum_operand=options.maximum,
         operations=options.operations,
     )
-    layout = WorksheetLayout(options.rows, options.cols, options.font_size)
+    layout = WorksheetLayout(
+        options.rows, options.cols, options.font_size,
+        instructions=options.instructions, font_name=options.font_name,
+    )
     generate_pdf(options.output, problems, layout)
 
 

@@ -1,5 +1,8 @@
 # Worksheet Generators
 
+This page covers arithmetic worksheets. See [Spelling Practice](language-worksheets.md)
+for grade-level word lists, rote-spelling sheets, and handwriting guides.
+
 Run the scripts with Python and ReportLab installed (the existing environment is
 `worksheet_venv/bin/python`). Each command writes a PDF to `--output`, replacing
 that file if it already exists.
@@ -40,6 +43,16 @@ minimum and its first operand.
 All scripts accept `--output`, `--minimum`, `--maximum`, `--rows` (default 8),
 `--cols` (default 5), `--font-size` (default 20), and `--pages` (default 1).
 Use `--help` for the command-line reference.
+
+All worksheets now default to bundled, PDF-embedded Andika. Use `--font Helvetica`
+for the previous face, another standard PDF font name, or `--font /path/to/font.ttf`
+for a custom TrueType font. See [Worksheet Fonts](fonts.md) for details and licensing.
+
+Arithmetic pages now include `Solve each problem.` above the grid. Customize it
+with `--instructions "Solve as many problems as you can in one minute."`, or
+omit it with `--instructions ""`. Instructions wrap and repeat on each page;
+the grid moves down to make room. A header that leaves insufficient space is
+rejected. Operation presets and operand ranges are unchanged.
 
 ## Python API
 
