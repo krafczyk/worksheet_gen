@@ -1,1 +1,4 @@
 *.pdf
+*.py[cod]
+__pycache__/
+worksheet_venv/
